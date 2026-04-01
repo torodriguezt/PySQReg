@@ -19,12 +19,13 @@ import warnings
 from contextlib import contextmanager
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from scipy.sparse import issparse
 from scipy.stats import norm
 import statsmodels.api as sm
 
-from .areal import QuantSAR, moran_test
+from .areal import QuantSAR, moran_test, ArrayLike, WeightMatrix
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -117,8 +118,16 @@ def _style():
 #  Moran scatterplot
 # ═══════════════════════════════════════════════════════════════════════════
 
-def plot_moran(x, W, *, ax=None, annotate=True, quadrant_labels=True,
-               figsize=(7, 6.2), title=None):
+def plot_moran(
+    x: ArrayLike,
+    W: WeightMatrix,
+    *,
+    ax: object | None = None,
+    annotate: bool = True,
+    quadrant_labels: bool = True,
+    figsize: tuple[float, float] = (7, 6.2),
+    title: str | None = None,
+) -> object:
     """Moran's I scatterplot with quadrant classification.
 
     Plots the spatial lag *Wz* against the standardised variable *z*,
@@ -272,25 +281,35 @@ class QuantileProcessResult:
         ``ci_lower``, ``ci_upper``).
     """
 
-    def __init__(self, data, taus, ols=None):
+    def __init__(self, data: pd.DataFrame, taus: np.ndarray,
+                 ols: pd.DataFrame | None = None) -> None:
         self.data = data
         self.taus = taus
         self.ols = ols
 
-    def plot(self, **kwargs):
+    def plot(self, **kwargs: object) -> object:
         """Shortcut for ``plot_quantile_process(self, **kwargs)``."""
         return plot_quantile_process(self, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         n_taus = len(self.taus)
         n_vars = self.data['variable'].nunique()
         return (f"QuantileProcessResult("
                 f"{n_taus} quantiles, {n_vars} variables)")
 
 
-def fit_quantile_process(X, y, W, *, taus=None, method='two_stage',
-                         alpha=0.05, include_ols=True, verbose=1,
-                         **model_kws):
+def fit_quantile_process(
+    X: ArrayLike,
+    y: ArrayLike,
+    W: WeightMatrix,
+    *,
+    taus: npt.ArrayLike | None = None,
+    method: str = 'two_stage',
+    alpha: float = 0.05,
+    include_ols: bool = True,
+    verbose: int = 1,
+    **model_kws: object,
+) -> QuantileProcessResult:
     """Fit spatial quantile regression across a grid of quantiles.
 
     Parameters
@@ -394,8 +413,13 @@ def fit_quantile_process(X, y, W, *, taus=None, method='two_stage',
     return QuantileProcessResult(data=data, taus=taus, ols=ols_df)
 
 
-def plot_quantile_process(result, *, variables=None, figsize=None,
-                          title=None):
+def plot_quantile_process(
+    result: QuantileProcessResult,
+    *,
+    variables: list[str] | str | None = None,
+    figsize: tuple[float, float] | None = None,
+    title: str | None = None,
+) -> object:
     """Coefficient-process ribbon plot across quantiles.
 
     Displays how each coefficient evolves over quantile levels, with
@@ -527,7 +551,13 @@ def plot_quantile_process(result, *, variables=None, figsize=None,
 #  Rho path
 # ═══════════════════════════════════════════════════════════════════════════
 
-def plot_rho_path(model, *, ax=None, figsize=(7.5, 4.5), title=None):
+def plot_rho_path(
+    model: QuantSAR,
+    *,
+    ax: object | None = None,
+    figsize: tuple[float, float] = (7.5, 4.5),
+    title: str | None = None,
+) -> object:
     """Chernozhukov-Hansen rho-selection path.
 
     Visualises *alpha(rho)* — the coefficient on the predicted spatial

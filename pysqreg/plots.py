@@ -35,17 +35,17 @@ from .areal import QuantSAR, moran_test, ArrayLike, WeightMatrix
 # Core palette — derived from the ColorBrewer RdBu diverging scheme,
 # chosen for print safety, projected-slide legibility, and
 # colorblind accessibility (deuteranopia / protanopia safe).
-_BLUE = '#2166AC'
-_RED = '#B2182B'
-_CORAL = '#D6604D'
-_TEAL = '#35978F'
-_AMBER = '#F4A582'
-_LBLUE = '#92C5DE'
-_PURPLE = '#762A83'
-_GREEN = '#5AAE61'
-_DARK = '#1F1F2E'
-_GRAY = '#878787'
-_LGRAY = '#D9D9D9'
+_BLUE = '#3B82F6'
+_RED = '#EF4444'
+_CORAL = '#F87171'
+_TEAL = '#14B8A6'
+_AMBER = '#F59E0B'
+_LBLUE = '#93C5FD'
+_PURPLE = '#A855F7'
+_GREEN = '#22C55E'
+_DARK = '#1E293B'
+_GRAY = '#64748B'
+_LGRAY = '#CBD5E1'
 
 # Moran-scatter quadrant colours
 _QUAD = {
@@ -61,43 +61,44 @@ _CYCLE = [_BLUE, _CORAL, _TEAL, _PURPLE, _AMBER, _GREEN]
 # Matplotlib rcParams applied inside every public function so the
 # caller's global state is never mutated.
 _RC = {
-    'figure.facecolor':     'white',
-    'figure.dpi':           150,
-    'axes.facecolor':       'white',
-    'axes.edgecolor':       '#BBBBBB',
-    'axes.linewidth':       0.8,
+    'figure.facecolor':     '#FAFBFC',
+    'figure.dpi':           180,
+    'savefig.dpi':          300,
+    'axes.facecolor':       '#FFFFFF',
+    'axes.edgecolor':       '#E2E8F0',
+    'axes.linewidth':       0.7,
     'axes.grid':            True,
     'axes.grid.axis':       'both',
-    'axes.titlesize':       13,
-    'axes.titlepad':        14,
-    'axes.labelsize':       11,
-    'axes.labelcolor':      '#333333',
-    'axes.labelpad':        8,
+    'axes.titlesize':       15,
+    'axes.titlepad':        16,
+    'axes.labelsize':       12,
+    'axes.labelcolor':      '#1E293B',
+    'axes.labelpad':        10,
     'axes.spines.top':      False,
     'axes.spines.right':    False,
-    'grid.color':           '#EAEAF2',
+    'grid.color':           '#F1F5F9',
     'grid.linewidth':       0.5,
     'grid.alpha':           1.0,
-    'xtick.labelsize':      9.5,
-    'ytick.labelsize':      9.5,
-    'xtick.color':          '#555555',
-    'ytick.color':          '#555555',
+    'xtick.labelsize':      10.5,
+    'ytick.labelsize':      10.5,
+    'xtick.color':          '#475569',
+    'ytick.color':          '#475569',
     'xtick.direction':      'out',
     'ytick.direction':      'out',
     'xtick.major.size':     4,
     'ytick.major.size':     4,
     'xtick.major.width':    0.6,
     'ytick.major.width':    0.6,
-    'xtick.major.pad':      6,
-    'ytick.major.pad':      6,
-    'legend.fontsize':      9,
+    'xtick.major.pad':      7,
+    'ytick.major.pad':      7,
+    'legend.fontsize':      10,
     'legend.frameon':       True,
-    'legend.framealpha':    0.92,
-    'legend.edgecolor':     '#CCCCCC',
+    'legend.framealpha':    0.95,
+    'legend.edgecolor':     '#E2E8F0',
     'legend.fancybox':      True,
     'font.family':          'sans-serif',
-    'font.size':            10.5,
-    'text.color':           '#333333',
+    'font.size':            11.5,
+    'text.color':           '#1E293B',
 }
 
 
@@ -197,8 +198,8 @@ def plot_moran(
         ax.axvline(0, **ref_kw)
 
         # ── Scatter by quadrant ────────────────────────────────────────
-        pt_kw = dict(s=42, edgecolors='white', linewidths=0.5,
-                     alpha=0.78, zorder=3)
+        pt_kw = dict(s=55, edgecolors='white', linewidths=0.6,
+                     alpha=0.82, zorder=3)
         for name, mask in masks.items():
             if mask.any():
                 ax.scatter(z[mask], Wz[mask], c=_QUAD[name],
@@ -207,8 +208,9 @@ def plot_moran(
         # ── Regression line (slope = Moran's I for row-std W) ──────────
         slope = float(z @ Wz) / float(z @ z)
         xs_line = np.array([-lim, lim])
-        ax.plot(xs_line, slope * xs_line, color=_DARK, linewidth=2.2,
-                zorder=4, label=f'slope = {slope:.4f}')
+        ax.plot(xs_line, slope * xs_line, color=_DARK, linewidth=2.5,
+                zorder=4, label=f'slope = {slope:.4f}',
+                solid_capstyle='round')
 
         # ── Axes ───────────────────────────────────────────────────────
         ax.set_xlim(-lim, lim)
@@ -246,16 +248,17 @@ def plot_moran(
             )
             ax.text(
                 0.03, 0.97, text, transform=ax.transAxes,
-                fontsize=9, verticalalignment='top',
+                fontsize=10, verticalalignment='top',
                 fontfamily='monospace',
-                bbox=dict(boxstyle='round,pad=0.6', facecolor='white',
-                          edgecolor='#CCCCCC', alpha=0.94),
+                bbox=dict(boxstyle='round,pad=0.7', facecolor='white',
+                          edgecolor='#E2E8F0', alpha=0.96),
             )
 
         # ── Legend ─────────────────────────────────────────────────────
-        ax.legend(loc='lower right', fontsize=8.5, framealpha=0.92,
-                  edgecolor='#CCCCCC', markerscale=1.2,
-                  handletextpad=0.4, columnspacing=0.8)
+        ax.legend(loc='lower right', fontsize=10, framealpha=0.95,
+                  edgecolor='#E2E8F0', markerscale=1.3,
+                  handletextpad=0.5, columnspacing=0.8,
+                  borderpad=0.7)
 
         fig = ax.get_figure()
         fig.tight_layout()
@@ -492,8 +495,9 @@ def plot_quantile_process(
             )
 
             # Coefficient line ──────────────────────────────────────────
-            ax.plot(taus_v, coefs, color=_BLUE, linewidth=2.2,
-                    zorder=3, label='Spatial QR')
+            ax.plot(taus_v, coefs, color=_BLUE, linewidth=2.5,
+                    zorder=3, label='Spatial QR',
+                    solid_capstyle='round')
 
             # OLS reference ─────────────────────────────────────────────
             if ols is not None:
@@ -516,7 +520,7 @@ def plot_quantile_process(
                                linestyle=':', zorder=0)
 
             # Formatting ────────────────────────────────────────────────
-            ax.set_title(var_name, fontweight='semibold', fontsize=12)
+            ax.set_title(var_name, fontweight='bold', fontsize=14)
             if row == nrows - 1:
                 ax.set_xlabel(r'$\tau$  (quantile)')
             if col == 0:
@@ -534,14 +538,15 @@ def plot_quantile_process(
             fig.legend(
                 handles, labels,
                 loc='lower center', ncol=len(handles),
-                fontsize=9.5, frameon=True, framealpha=0.92,
-                edgecolor='#CCCCCC',
+                fontsize=10.5, frameon=True, framealpha=0.95,
+                edgecolor='#E2E8F0',
                 bbox_to_anchor=(0.5, -0.01),
+                borderpad=0.8,
             )
 
         # ── Super-title ────────────────────────────────────────────────
         if title:
-            fig.suptitle(title, fontweight='bold', fontsize=14, y=1.02)
+            fig.suptitle(title, fontweight='bold', fontsize=16, y=1.02)
 
         fig.tight_layout(rect=[0, 0.03, 1, 1])
         return fig
@@ -605,7 +610,8 @@ def plot_rho_path(
                         zorder=1)
 
         # ── Main curve ─────────────────────────────────────────────────
-        ax.plot(grid, path, color=_BLUE, linewidth=2.2, zorder=3)
+        ax.plot(grid, path, color=_BLUE, linewidth=2.8, zorder=3,
+                solid_capstyle='round')
 
         # ── Zero reference ─────────────────────────────────────────────
         ax.axhline(0, color=_GRAY, linewidth=0.9, linestyle='--',
@@ -614,8 +620,8 @@ def plot_rho_path(
         # ── Optimal rho marker ─────────────────────────────────────────
         ax.axvline(rho_star, color=_CORAL, linewidth=1.4,
                    linestyle='--', alpha=0.85, zorder=2)
-        ax.scatter([rho_star], [alpha_star], color=_CORAL, s=65,
-                   edgecolors='white', linewidths=1.5, zorder=5)
+        ax.scatter([rho_star], [alpha_star], color=_CORAL, s=80,
+                   edgecolors='white', linewidths=1.8, zorder=5)
 
         # ── Annotation ─────────────────────────────────────────────────
         y_range = path.max() - path.min()
@@ -623,10 +629,11 @@ def plot_rho_path(
         ax.annotate(
             f'$\\hat{{\\rho}}$ = {rho_star:.3f}',
             xy=(rho_star, alpha_star),
-            xytext=(rho_star + x_range * 0.10,
-                    alpha_star + y_range * 0.18),
-            fontsize=11.5, fontweight='semibold', color=_CORAL,
-            arrowprops=dict(arrowstyle='->', color=_CORAL, lw=1.3),
+            xytext=(rho_star + x_range * 0.12,
+                    alpha_star + y_range * 0.20),
+            fontsize=13, fontweight='bold', color=_CORAL,
+            arrowprops=dict(arrowstyle='->', color=_CORAL, lw=1.5,
+                            connectionstyle='arc3,rad=0.15'),
             zorder=6,
         )
 

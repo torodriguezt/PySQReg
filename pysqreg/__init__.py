@@ -12,7 +12,7 @@ Quick start
 >>> model.summary()
 """
 
-from .areal import QuantSAR, moran_test, MoranResult
+from .areal import QuantSAR, QuantSLX, QuantSDM, moran_test, MoranResult
 from .plots import (
     plot_moran,
     fit_quantile_process,
@@ -23,6 +23,8 @@ from .plots import (
 
 __all__ = [
     "QuantSAR",
+    "QuantSLX",
+    "QuantSDM",
     "moran_test",
     "MoranResult",
     "plot_moran",
